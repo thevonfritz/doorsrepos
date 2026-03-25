@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Site tributo a The Doors — a banda que abriu as portas da percepção.">
+  <meta name="author" content="Eduardo G. Rodrigues">
+  <title>The Doors — Break On Through</title>
+  <link rel="icon" href="imgs/cropped-escape-rooms-adventure-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       TOKENS
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:        #080808;
+      --dark:         #0d0d0d;
+      --dark-mid:     #131313;
+      --gold:         #c9a84c;
+      --gold-lt:      #e8c97a;
+      --gold-dim:     rgba(201,168,76,.12);
+      --white:        #f0ece4;
+      --gray:         #888;
+      --gray-lt:      #ccc;
+
+      /* glass recipe */
+      --g-bg:         rgba(255,255,255,.055);
+      --g-border:     rgba(255,255,255,.13);
+      --g-shine:      rgba(255,255,255,.20);
+      --g-blur:       blur(20px) saturate(160%);
+
+      /* radii */
+      --r-xs:   8px;
+      --r-sm:   14px;
+      --r-md:   20px;
+      --r-lg:   28px;
+      --r-xl:   40px;
+      --r-pill: 999px;
+
+      /* layout */
+      --nav-h:  72px;
+      --max-w:  1160px;
+
+      --f-display: 'Bebas Neue', sans-serif;
+      --f-serif:   'Playfair Display', serif;
+      --f-body:    'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--f-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img  { display: block; max-width: 100%; height: auto; }
+    a    { color: inherit; text-decoration: none; }
+    ul   { list-style: none; }
+    button { font-family: var(--f-body); cursor: pointer; }
+
+    ::-webkit-scrollbar       { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: var(--r-pill); }
+
+    /* ============================================================
+       GLASS UTILITY
+    ============================================================ */
+    .glass {
+      background: var(--g-bg);
+      backdrop-filter: var(--g-blur);
+      -webkit-backdrop-filter: var(--g-blur);
+      border: 1px solid var(--g-border);
+      box-shadow: inset 0 1px 0 var(--g-shine), 0 8px 32px rgba(0,0,0,.35);
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .wrap {
+      width: 100%;
+      max-width: var(--max-w);
+      margin-inline: auto;
+      padding-inline: clamp(1rem, 4vw, 2rem);
+    }
+
+    section { padding-block: clamp(4rem, 8vw, 7rem); }
+
+    .section-label {
+      display: inline-block;
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .7rem;
+    }
+
+    .section-title {
+      font-family: var(--f-serif);
+      font-size: clamp(1.65rem, 4vw, 2.85rem);
+      font-weight: 700;
+      line-height: 1.18;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .section-text {
+      font-size: clamp(.87rem, 1.6vw, 1rem);
+      color: var(--gray-lt);
+      line-height: 1.85;
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .8rem 1.9rem;
+      background: var(--gold);
+      color: var(--black);
+      font-size: .73rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none; border-radius: var(--r-pill);
+      transition: background .25s, transform .2s, box-shadow .25s;
+      box-shadow: 0 4px 20px rgba(201,168,76,.3);
+      white-space: nowrap;
+    }
+    .btn-gold:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,.45); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .8rem 1.9rem;
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      color: var(--white);
+      font-size: .73rem; font-weight: 500; letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid var(--g-border); border-radius: var(--r-pill);
+      transition: background .25s, border-color .25s, color .25s, box-shadow .25s;
+      white-space: nowrap;
+    }
+    .btn-ghost:hover { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); box-shadow: 0 4px 24px rgba(201,168,76,.18); }
+
+    /* ============================================================
+       ★ HEADER / NAVBAR — completamente refeita
+         • Sempre visível (sticky comportamento)
+         • Transparente no topo
+         • Glass ao scrollar
+         • Logo e navegação responsiva
+    ============================================================ */
+    .header {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline: 0;
+      z-index: 999;
+      height: var(--nav-h);
+      transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+    }
+
+    /* estado scrollado — glass com backdrop */
+    .header.is-glass {
+      background: rgba(8,8,8,.65);
+      backdrop-filter: blur(26px) saturate(180%);
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      border-bottom: 1px solid var(--g-border);
+      box-shadow: 0 2px 52px rgba(0,0,0,.6), inset 0 -1px 0 rgba(255,255,255,.04);
+    }
+
+    .header-inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-inline: clamp(1rem, 4vw, 2.5rem);
+    }
+
+    /* logo */
+    .header-logo {
+      font-family: var(--f-display);
+      font-size: clamp(1.35rem, 3vw, 1.7rem);
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-shadow: 0 0 28px rgba(201,168,76,.35);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    /* nav links desktop */
+    .header-nav {
+      display: none;
+      align-items: center;
+      gap: clamp(1.2rem, 2.5vw, 2.2rem);
+    }
+
+    .header-nav a {
+      font-size: .7rem; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gray-lt);
+      position: relative; transition: color .25s;
+    }
+    .header-nav a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold); border-radius: var(--r-pill);
+      transition: width .3s;
+    }
+    .header-nav a:hover        { color: var(--gold); }
+    .header-nav a:hover::after { width: 100%; }
+
+    /* CTA pill na navbar */
+    .header-cta {
+      padding: .42rem 1.15rem;
+      background: rgba(201,168,76,.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(201,168,76,.35);
+      border-radius: var(--r-pill);
+      color: var(--gold) !important;
+      font-size: .68rem !important; letter-spacing: 1.5px;
+      transition: background .25s, color .25s, border-color .25s;
+      white-space: nowrap;
+    }
+    .header-cta:hover { background: var(--gold) !important; color: var(--black) !important; border-color: var(--gold) !important; }
+    .header-cta::after { display: none !important; }
+
+    /* hamburger */
+    .hamburger {
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      gap: 5px;
+      width: 42px; height: 42px;
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--g-border);
+      border-radius: var(--r-md);
+      flex-shrink: 0;
+      transition: background .25s;
+    }
+    .hamburger:hover { background: var(--gold-dim); }
+    .hamburger span {
+      display: block; width: 20px; height: 1.5px;
+      background: var(--gold); border-radius: var(--r-pill);
+      transition: transform .3s, opacity .3s;
+      transform-origin: center;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* drawer mobile */
+    .nav-drawer {
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(8,8,8,.92);
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: clamp(1.2rem, 3vh, 1.8rem);
+      opacity: 0; pointer-events: none;
+      transition: opacity .35s;
+    }
+    .nav-drawer.open { opacity: 1; pointer-events: all; }
+
+    .nav-drawer a {
+      font-family: var(--f-display);
+      font-size: clamp(1.8rem, 6vw, 2.4rem);
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--white); transition: color .2s;
+    }
+    .nav-drawer a:hover { color: var(--gold); }
+
+    .drawer-divider {
+      width: 40px; height: 1px;
+      background: rgba(255,255,255,.15);
+      margin: .4rem 0;
+    }
+
+    .drawer-cta {
+      padding: .6rem 2rem;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,.4) !important;
+      border-radius: var(--r-pill);
+      color: var(--gold) !important;
+      font-family: var(--f-body) !important;
+      font-size: .8rem !important;
+      letter-spacing: 2px;
+    }
+    .drawer-cta:hover { background: var(--gold) !important; color: var(--black) !important; }
+
+    /* responsive */
+    @media (min-width: 768px) {
+      .header-nav { display: flex; }
+      .hamburger  { display: none; }
+      .nav-drawer { display: none !important; }
+    }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative;
+      height: 100svh; min-height: 580px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('imgs/THEDOORS1.png') center/cover no-repeat;
+      filter: brightness(.28) saturate(.5);
+      will-change: transform;
+    }
+
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.15) 0%,
+        rgba(0,0,0,.05) 42%,
+        rgba(8,8,8,.72) 78%,
+        var(--black) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 840px;
+      padding-inline: clamp(1rem, 5vw, 2rem);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .42rem 1.3rem;
+      background: rgba(201,168,76,.1);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,168,76,.22);
+      border-radius: var(--r-pill);
+      font-size: .64rem; font-weight: 500; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1.3rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    .hero-title {
+      font-family: var(--f-display);
+      font-size: clamp(4.5rem, 20vw, 12rem);
+      line-height: .88; letter-spacing: 6px;
+      color: var(--white); text-transform: uppercase;
+    }
+    .hero-title span { display: block; color: var(--gold); }
+
+    .hero-sub {
+      font-family: var(--f-serif); font-style: italic;
+      font-size: clamp(.9rem, 2.2vw, 1.25rem);
+      color: var(--gray-lt); margin: 1.2rem 0 2rem;
+    }
+
+    .hero-actions {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center; gap: .85rem;
+    }
+
+    /* badges glass */
+    .hero-badges {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: .6rem;
+      margin-top: 2.2rem;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .35rem .95rem;
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--g-border); border-radius: var(--r-pill);
+      font-size: .63rem; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--gray-lt);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .hero-badge strong { color: var(--gold); }
+
+    /* ============================================================
+       MARQUEE
+    ============================================================ */
+    .marquee-strip {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      padding: .82rem 0; overflow: hidden; white-space: nowrap;
+    }
+    .marquee-track { display: inline-flex; animation: marquee 30s linear infinite; }
+    .marquee-track span {
+      font-family: var(--f-display); font-size: .78rem;
+      letter-spacing: 3px; color: var(--black);
+      padding: 0 2rem; text-transform: uppercase;
+    }
+    .marquee-track span.dot::before {
+      content: '◆'; margin-right: 2rem;
+      font-size: .48rem; vertical-align: middle;
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    .about { background: var(--dark); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(2.5rem, 5vw, 5rem);
+      align-items: center;
+    }
+    @media (min-width: 860px) {
+      .about-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ★ Imagem: moldura glass + proporção retrato */
+    .about-img-wrap { max-width: 460px; margin-inline: auto; width: 100%; }
+    @media (min-width: 860px) { .about-img-wrap { max-width: 100%; margin-inline: 0; } }
+
+    .about-img-frame {
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      border: 1px solid var(--g-border);
+      box-shadow:
+        inset 0 1px 0 var(--g-shine),
+        0 32px 64px rgba(0,0,0,.65);
+      position: relative;
+    }
+    .about-img-box {
+      width: 100%; aspect-ratio: 4/5; overflow: hidden;
+    }
+    .about-img-box img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      filter: grayscale(22%) contrast(1.08);
+      transition: transform .7s ease;
+    }
+    .about-img-frame:hover .about-img-box img { transform: scale(1.04); }
+
+    /* tag flutuante glass */
+    .about-img-tag {
+      position: absolute; bottom: 1.1rem; left: 1.1rem;
+      padding: .42rem 1rem;
+      background: rgba(8,8,8,.58);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid var(--g-border); border-radius: var(--r-pill);
+      font-family: var(--f-display); font-size: .78rem; letter-spacing: 3px;
+      color: var(--gold);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    /* stat cards glass */
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 2.2rem;
+    }
+    .stat-card {
+      padding: 1.1rem 1.3rem;
+      background: var(--g-bg);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--g-border); border-radius: var(--r-md);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+      transition: transform .25s, border-color .25s;
+    }
+    .stat-card:hover { transform: translateY(-3px); border-color: rgba(201,168,76,.3); }
+    .stat-num { font-family: var(--f-display); font-size: 1.9rem; color: var(--gold); line-height: 1; }
+    .stat-lbl { font-size: .62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); margin-top: .22rem; }
+
+    /* ============================================================
+       GALLERY
+    ============================================================ */
+    .gallery { background: var(--black); }
+    .gallery-header { text-align: center; margin-bottom: 2.5rem; }
+
+    /* ★ Container com bordas arredondadas e glass border */
+    .gallery-track-wrap {
+      overflow: hidden;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--g-border);
+      box-shadow:
+        inset 0 1px 0 var(--g-shine),
+        0 28px 72px rgba(0,0,0,.65);
+    }
+
+    .gallery-track { display: flex; transition: transform .65s cubic-bezier(.77,0,.175,1); }
+    .gallery-slide { min-width: 100%; position: relative; overflow: hidden; }
+
+    /* ★ Proporção por breakpoint */
+    .gallery-img-box { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+    @media (min-width: 600px)  { .gallery-img-box { aspect-ratio: 16/9; } }
+    @media (min-width: 1024px) { .gallery-img-box { aspect-ratio: 21/9; } }
+
+    .gallery-img-box img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      filter: brightness(.62);
+      transition: transform .7s ease;
+    }
+    .gallery-slide:hover .gallery-img-box img { transform: scale(1.03); }
+
+    /* caption glass */
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: clamp(1.2rem, 3vw, 2.5rem);
+      background: linear-gradient(to top, rgba(0,0,0,.8), transparent);
+    }
+    .gallery-caption-pill {
+      display: inline-block;
+      padding: .7rem 1.3rem;
+      background: rgba(8,8,8,.48);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid var(--g-border); border-radius: var(--r-md);
+      box-shadow: inset 0 1px 0 var(--g-shine);
+    }
+    .gallery-caption-pill h3 {
+      font-family: var(--f-serif);
+      font-size: clamp(.95rem, 2.5vw, 1.5rem); font-weight: 700;
+    }
+    .gallery-caption-pill p { font-size: clamp(.72rem, 1.5vw, .86rem); color: var(--gray-lt); margin-top: .2rem; }
+
+    /* controls */
+    .gallery-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: .8rem; margin-top: 1.4rem;
+    }
+    .gallery-btn {
+      width: 44px; height: 44px;
+      background: var(--g-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--g-border); border-radius: 50%;
+      color: var(--gold); font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 1px 0 var(--g-shine);
+      transition: background .25s, border-color .25s, transform .2s;
+    }
+    .gallery-btn:hover { background: var(--gold-dim); border-color: var(--gold); transform: scale(1.1); }
+
+    .gallery-dots { display: flex; gap: .4rem; align-items: center; }
+    .gallery-dot {
+      width: 6px; height: 6px; border-radius: var(--r-pill);
+      background: var(--gray); border: none;
+      transition: background .3s, width .3s, transform .3s;
+    }
+    .gallery-dot.active { background: var(--gold); width: 20px; }
+
+    /* ============================================================
+       QUOTE
+    ============================================================ */
+    .quote-section {
+      background: var(--dark);
+      padding-block: clamp(5rem, 10vw, 8rem);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .quote-section::before {
+      content: '"';
+      position: absolute; top: -5rem; left: 50%; transform: translateX(-50%);
+      font-family: var(--f-serif);
+      font-size: clamp(8rem, 22vw, 18rem);
+      color: rgba(201,168,76,.035); line-height: 1; pointer-events: none;
+    }
+    .quote-card {
+      display: inline-block; max-width: 740px;
+      padding: clamp(1.8rem, 4vw, 2.8rem) clamp(1.5rem, 5vw, 3rem);
+      background: var(--g-bg);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid var(--g-border); border-radius: var(--r-xl);
+      box-shadow: inset 0 1px 0 var(--g-shine), 0 24px 64px rgba(0,0,0,.5);
+      position: relative;
+    }
+    .quote-text {
+      font-family: var(--f-serif); font-style: italic; font-weight: 400;
+      font-size: clamp(1.05rem, 3vw, 1.75rem);
+      color: var(--white); line-height: 1.55; margin-bottom: 1.1rem;
+    }
+    .quote-author { font-size: .68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+
+    /* ============================================================
+       MEMBERS
+    ============================================================ */
+    .members { background: var(--dark-mid); }
+    .members-header { text-align: center; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+
+    /* ★ auto-fit: adapta automaticamente de 1 a 4 colunas */
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .member-card {
+      text-align: center; padding: clamp(1.4rem, 3vw, 2rem) 1.2rem;
+      background: var(--g-bg);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      border: 1px solid var(--g-border); border-radius: var(--r-xl);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.09);
+      position: relative; overflow: hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .member-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0); transition: transform .4s;
+    }
+    .member-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(201,168,76,.32);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 20px 48px rgba(0,0,0,.5);
+    }
+    .member-card:hover::after { transform: scaleX(1); }
+
+    .member-avatar {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: rgba(201,168,76,.09);
+      border: 1px solid rgba(201,168,76,.22);
+      margin: 0 auto .9rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.65rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .member-role {
+      font-size: .61rem; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: .3rem;
+    }
+    .member-name { font-family: var(--f-serif); font-size: 1rem; font-weight: 700; }
+
+    /* ============================================================
+       STORE
+    ============================================================ */
+    .store { background: var(--black); }
+
+    .store-head {
+      display: flex; flex-direction: column; gap: 1.1rem;
+      margin-bottom: clamp(2rem, 4vw, 3.2rem);
+    }
+    @media (min-width: 640px) {
+      .store-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    }
+
+    /* ★ auto-fit: 1 col mobile → 2 cols tablet → 3 cols desktop */
+    .store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .product-card {
+      background: var(--g-bg);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--g-border); border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(201,168,76,.28);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 20px 52px rgba(0,0,0,.52);
+    }
+
+    /* ★ Imagem quadrada uniforme */
+    .product-img-box {
+      position: relative; width: 100%; aspect-ratio: 1; overflow: hidden;
+    }
+    .product-img-box img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      filter: grayscale(12%);
+      transition: transform .55s, filter .45s;
+    }
+    .product-card:hover .product-img-box img { transform: scale(1.07); filter: grayscale(0%); }
+
+    /* badge glass sobre imagem */
+    .product-badge {
+      position: absolute; top: .85rem; right: .85rem;
+      padding: .26rem .68rem;
+      background: rgba(8,8,8,.55);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,168,76,.32); border-radius: var(--r-pill);
+      color: var(--gold); font-size: .58rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    .product-info { padding: clamp(1rem, 2vw, 1.4rem); }
+    .product-name { font-family: var(--f-serif); font-size: .98rem; font-weight: 600; margin-bottom: .28rem; }
+    .product-desc { font-size: .8rem; color: var(--gray); line-height: 1.55; margin-bottom: .95rem; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: var(--f-display); font-size: 1.2rem; color: var(--gold); letter-spacing: 1px; }
+    .product-btn {
+      padding: .42rem 1rem;
+      background: rgba(201,168,76,.09);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(201,168,76,.22); border-radius: var(--r-pill);
+      color: var(--gold); font-size: .68rem; letter-spacing: 1px; text-transform: uppercase;
+      transition: background .25s, color .25s, border-color .25s;
+    }
+    .product-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+
+    /* ============================================================
+       CONNECT
+    ============================================================ */
+    .connect { background: var(--dark-mid); }
+
+    .connect-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: clamp(2.5rem, 5vw, 4.5rem);
+    }
+    @media (min-width: 860px) { .connect-grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+    .social-list { display: flex; flex-direction: column; gap: .8rem; margin-top: 1.8rem; }
+    .social-item {
+      display: flex; align-items: center; gap: .9rem;
+      padding: .85rem 1.2rem;
+      background: var(--g-bg);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--g-border); border-radius: var(--r-lg);
+      font-size: .83rem; letter-spacing: 1px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+      transition: border-color .25s, background .25s, color .25s, transform .22s;
+    }
+    .social-item:hover {
+      border-color: rgba(201,168,76,.32);
+      background: rgba(201,168,76,.06);
+      color: var(--gold); transform: translateX(5px);
+    }
+    .social-icon {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(201,168,76,.09);
+      border: 1px solid rgba(201,168,76,.18);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .88rem; flex-shrink: 0;
+    }
+
+    /* newsletter card glass */
+    .newsletter-card {
+      background: var(--g-bg);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid var(--g-border); border-radius: var(--r-xl);
+      padding: clamp(1.8rem, 4vw, 2.8rem) clamp(1.5rem, 4vw, 2.2rem);
+      box-shadow: inset 0 1px 0 var(--g-shine), 0 24px 56px rgba(0,0,0,.45);
+    }
+    .newsletter-card h3 {
+      font-family: var(--f-serif);
+      font-size: clamp(1.3rem, 3vw, 1.8rem); font-weight: 700; margin-bottom: .65rem;
+    }
+    .newsletter-card p { font-size: .86rem; color: var(--gray-lt); margin-bottom: 1.6rem; line-height: 1.7; }
+    .newsletter-form { display: flex; flex-direction: column; gap: .7rem; }
+    .newsletter-input {
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--g-border); border-radius: var(--r-lg);
+      padding: .86rem 1.15rem; color: var(--white);
+      font-family: var(--f-body); font-size: .88rem; outline: none;
+      transition: border-color .25s, background .25s; width: 100%;
+    }
+    .newsletter-input:focus { border-color: rgba(201,168,76,.48); background: rgba(201,168,76,.04); }
+    .newsletter-input::placeholder { color: var(--gray); }
+    .newsletter-btn {
+      padding: .86rem; background: var(--gold); color: var(--black);
+      font-size: .72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      border: none; border-radius: var(--r-pill);
+      box-shadow: 0 4px 20px rgba(201,168,76,.35);
+      transition: background .25s, box-shadow .25s;
+    }
+    .newsletter-btn:hover { background: var(--gold-lt); box-shadow: 0 6px 28px rgba(201,168,76,.5); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--g-border);
+      padding: clamp(3rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem) 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.2rem;
+      max-width: var(--max-w); margin-inline: auto;
+      margin-bottom: 2.5rem;
+    }
+    @media (min-width: 600px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr; } }
+
+    .footer-brand {
+      font-family: var(--f-display); font-size: 1.85rem;
+      letter-spacing: 4px; color: var(--gold); margin-bottom: .8rem;
+    }
+    .footer-desc { font-size: .84rem; color: var(--gray); line-height: 1.8; }
+
+    .footer-col h5 {
+      font-size: .64rem; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem;
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: .58rem; }
+    .footer-col a { font-size: .83rem; color: var(--gray); transition: color .25s; }
+    .footer-col a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      max-width: var(--max-w); margin-inline: auto;
+      padding-top: 1.6rem; border-top: 1px solid var(--g-border);
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: .8rem;
+    }
+    .footer-credit { font-size: .73rem; color: var(--gray); }
+    .footer-credit span { color: var(--gold); }
+
+    .back-to-top {
+      background: none; border: none;
+      font-size: .68rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gray); transition: color .25s;
+    }
+    .back-to-top:hover { color: var(--gold); }
+
+    /* ============================================================
+       ENTRANCE ANIMATION BASE
+    ============================================================ */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="header" id="header">
+    <div class="header-inner">
+
+      <a href="#hero" class="header-logo">The Doors</a>
+
+      <nav class="header-nav" aria-label="Navegação principal">
+        <a href="#about">A Banda</a>
+        <a href="#gallery">Galeria</a>
+        <a href="#members">Integrantes</a>
+        <a href="#store">Loja</a>
+        <a href="#connect">Conecte-se</a>
+        <a href="https://open.spotify.com/artist/22WZ7M8sxp5THdruNY3gXt"
+           target="_blank" rel="noopener" class="header-cta">
+          ♪ &nbsp;Spotify
+        </a>
+      </nav>
+
+      <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- Drawer mobile -->
+  <div class="nav-drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu mobile">
+    <a href="#about"    onclick="closeDrawer()">A Banda</a>
+    <a href="#gallery"  onclick="closeDrawer()">Galeria</a>
+    <a href="#members"  onclick="closeDrawer()">Integrantes</a>
+    <a href="#store"    onclick="closeDrawer()">Loja</a>
+    <a href="#connect"  onclick="closeDrawer()">Conecte-se</a>
+    <div class="drawer-divider"></div>
+    <a href="https://open.spotify.com/artist/22WZ7M8sxp5THdruNY3gXt"
+       target="_blank" rel="noopener" class="drawer-cta">♪ &nbsp;Ouvir no Spotify</a>
+  </div>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">🚪 Los Angeles, California — 1965</div>
+      <h1 class="hero-title">The<span>Doors</span></h1>
+      <p class="hero-sub">"Break on through to the other side."</p>
+      <div class="hero-actions">
+        <a href="#gallery" class="btn-gold">Explorar legado</a>
+        <a href="https://www.youtube.com/user/thedoors" target="_blank" rel="noopener" class="btn-ghost">Ver no YouTube</a>
+      </div>
+      <div class="hero-badges">
+        <span class="hero-badge"><strong>6</strong>&nbsp;Álbuns</span>
+        <span class="hero-badge"><strong>100M+</strong>&nbsp;Discos</span>
+        <span class="hero-badge"><strong>1993</strong>&nbsp;Hall of Fame</span>
+        <span class="hero-badge"><strong>1965–1973</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Light My Fire</span>
+      <span class="dot">Break on Through</span>
+      <span class="dot">Riders on the Storm</span>
+      <span class="dot">People Are Strange</span>
+      <span class="dot">Moonlight Drive</span>
+      <span class="dot">L.A. Woman</span>
+      <span class="dot">The End</span>
+      <span class="dot">Love Her Madly</span>
+      <span class="dot">Light My Fire</span>
+      <span class="dot">Break on Through</span>
+      <span class="dot">Riders on the Storm</span>
+      <span class="dot">People Are Strange</span>
+      <span class="dot">Moonlight Drive</span>
+      <span class="dot">L.A. Woman</span>
+      <span class="dot">The End</span>
+      <span class="dot">Love Her Madly</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ABOUT
+  ============================================================ -->
+  <section class="about" id="about">
+    <div class="wrap">
+      <div class="about-grid">
+
+        <div class="about-img-wrap reveal">
+          <div class="about-img-frame">
+            <div class="about-img-box">
+              <img src="imgs/THEDOORS2.jpg" alt="The Doors — Live Performance" loading="lazy">
+            </div>
+            <div class="about-img-tag">1965 — 1973</div>
+          </div>
+        </div>
+
+        <div class="about-text">
+          <span class="section-label">A Banda</span>
+          <h2 class="section-title">
+            Quatro homens que<br>
+            <em>abriram as portas</em><br>
+            da percepção
+          </h2>
+          <p class="section-text">
+            The Doors foi formada em 1965 em Los Angeles, Califórnia. Compostos por
+            Jim Morrison, Ray Manzarek, Robby Krieger e John Densmore, a banda
+            fundiu rock psicodélico, blues e poesia para criar um som que transcendeu
+            gerações. O nome foi tirado do livro de Aldous Huxley,
+            <em>The Doors of Perception</em>.
+          </p>
+          <div class="about-stats">
+            <div class="stat-card reveal"><div class="stat-num">6</div><div class="stat-lbl">Álbuns de estúdio</div></div>
+            <div class="stat-card reveal"><div class="stat-num">100M+</div><div class="stat-lbl">Discos vendidos</div></div>
+            <div class="stat-card reveal"><div class="stat-num">1993</div><div class="stat-lbl">Rock Hall of Fame</div></div>
+            <div class="stat-card reveal"><div class="stat-num">8</div><div class="stat-lbl">Anos de legado</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GALLERY
+  ============================================================ -->
+  <section class="gallery" id="gallery">
+    <div class="wrap">
+      <div class="gallery-header">
+        <span class="section-label">Galeria</span>
+        <h2 class="section-title">Momentos <em>imortais</em></h2>
+      </div>
+
+      <div class="gallery-track-wrap">
+        <div class="gallery-track" id="galleryTrack">
+
+          <div class="gallery-slide">
+            <div class="gallery-img-box">
+              <img src="imgs/THEDOORS1.png" alt="The Doors — Band Legacy" loading="lazy">
+            </div>
+            <div class="gallery-caption">
+              <div class="gallery-caption-pill">
+                <h3>Band Legacy</h3>
+                <p>Momentos icônicos da história do rock</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <div class="gallery-img-box">
+              <img src="imgs/THEDOORS2.jpg" alt="The Doors — Live Performance" loading="lazy">
+            </div>
+            <div class="gallery-caption">
+              <div class="gallery-caption-pill">
+                <h3>Live Performance</h3>
+                <p>Rompendo para o outro lado</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="gallery-slide">
+            <div class="gallery-img-box">
+              <img src="imgs/THEDOORS3.jpg" alt="The Doors — Cultural Icon" loading="lazy">
+            </div>
+            <div class="gallery-caption">
+              <div class="gallery-caption-pill">
+                <h3>Cultural Icon</h3>
+                <p>A lenda viva do rock</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="gallery-controls">
+        <button class="gallery-btn" id="galleryPrev" aria-label="Slide anterior">&#8592;</button>
+        <div class="gallery-dots" role="tablist">
+          <button class="gallery-dot active" data-index="0" aria-label="Slide 1"></button>
+          <button class="gallery-dot"        data-index="1" aria-label="Slide 2"></button>
+          <button class="gallery-dot"        data-index="2" aria-label="Slide 3"></button>
+        </div>
+        <button class="gallery-btn" id="galleryNext" aria-label="Próximo slide">&#8594;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       QUOTE
+  ============================================================ -->
+  <div class="quote-section">
+    <div class="quote-card reveal">
+      <p class="quote-text">
+        "There are things known and things unknown,<br>
+        and in between are the doors."
+      </p>
+      <span class="quote-author">— Jim Morrison</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MEMBERS
+  ============================================================ -->
+  <section class="members" id="members">
+    <div class="wrap">
+      <div class="members-header">
+        <span class="section-label">Integrantes</span>
+        <h2 class="section-title">Os quatro <em>visionários</em></h2>
+      </div>
+      <div class="members-grid">
+        <div class="member-card reveal">
+          <div class="member-avatar">🎤</div>
+          <div class="member-role">Vocal &amp; Poesia</div>
+          <div class="member-name">Jim Morrison</div>
+        </div>
+        <div class="member-card reveal">
+          <div class="member-avatar">🎹</div>
+          <div class="member-role">Teclado &amp; Baixo</div>
+          <div class="member-name">Ray Manzarek</div>
+        </div>
+        <div class="member-card reveal">
+          <div class="member-avatar">🎸</div>
+          <div class="member-role">Guitarra</div>
+          <div class="member-name">Robby Krieger</div>
+        </div>
+        <div class="member-card reveal">
+          <div class="member-avatar">🥁</div>
+          <div class="member-role">Bateria</div>
+          <div class="member-name">John Densmore</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STORE
+  ============================================================ -->
+  <section class="store" id="store">
+    <div class="wrap">
+      <div class="store-head">
+        <div>
+          <span class="section-label">Loja</span>
+          <h2 class="section-title">Leve o legado <em>consigo</em></h2>
+        </div>
+        <a href="#" class="btn-ghost">Ver todos</a>
+      </div>
+
+      <div class="store-grid">
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/the-doors-long-sleeve-logo.jpg" alt="Camisa Manga Longa" loading="lazy">
+          </div>
+          <div class="product-info">
+            <div class="product-name">Camisa Manga Longa</div>
+            <div class="product-desc">Logo oficial "The Doors" em manga longa preta.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 24,90</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/the-doors-chapeu-logo.jpg" alt="Boné The Doors" loading="lazy">
+            <span class="product-badge">Novo</span>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Boné Preto</div>
+            <div class="product-desc">Bordado "The Doors" — estilo clássico atemporal.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 10,00</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/The_Doors_-_L.A._Woman.jpg" alt="Álbum L.A. Woman" loading="lazy">
+            <span class="product-badge">Clássico</span>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Álbum L.A. Woman</div>
+            <div class="product-desc">O sexto álbum de estúdio da banda, lançado em 1971.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 28,30</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/produtos_macfly_estampas_4545.jpg" alt="Camiseta Feminina" loading="lazy">
+          </div>
+          <div class="product-info">
+            <div class="product-name">Camiseta Feminina</div>
+            <div class="product-desc">Estampa exclusiva "The Doors" — corte feminino.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 20,00</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/614x4cjztyL._SX450_.jpg" alt="Caneca Moonlight Drive" loading="lazy">
+          </div>
+          <div class="product-info">
+            <div class="product-name">Caneca Moonlight Drive</div>
+            <div class="product-desc">Para o seu café com trilha sonora perfeita.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 10,90</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-img-box">
+            <img src="imgs/718Y5MOQf1L._SX450_.jpg" alt="Caneca Riders on the Storm" loading="lazy">
+          </div>
+          <div class="product-info">
+            <div class="product-name">Caneca Riders on the Storm</div>
+            <div class="product-desc">Comece o dia como um Rider on the Storm.</div>
+            <div class="product-footer">
+              <span class="product-price">R$ 10,90</span>
+              <button class="product-btn">Ver</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONNECT
+  ============================================================ -->
+  <section class="connect" id="connect">
+    <div class="wrap">
+      <div class="connect-grid">
+
+        <div>
+          <span class="section-label">Conecte-se</span>
+          <h2 class="section-title">Siga a <em>jornada</em></h2>
+          <p class="section-text">
+            Acompanhe o legado de The Doors nas redes sociais e fique por dentro
+            de lançamentos, documentários e eventos tributo ao redor do mundo.
+          </p>
+          <ul class="social-list">
+            <li><a href="https://open.spotify.com/artist/22WZ7M8sxp5THdruNY3gXt" target="_blank" rel="noopener" class="social-item reveal"><span class="social-icon">🎵</span>Spotify</a></li>
+            <li><a href="https://www.youtube.com/user/thedoors"                   target="_blank" rel="noopener" class="social-item reveal"><span class="social-icon">▶</span>YouTube</a></li>
+            <li><a href="https://www.instagram.com/thedoors/"                     target="_blank" rel="noopener" class="social-item reveal"><span class="social-icon">📷</span>Instagram</a></li>
+            <li><a href="https://pt-br.facebook.com/thedoors/"                    target="_blank" rel="noopener" class="social-item reveal"><span class="social-icon">f</span>Facebook</a></li>
+          </ul>
+        </div>
+
+        <div class="newsletter-card reveal">
+          <h3>Fique por dentro <em>de tudo</em></h3>
+          <p>Receba novidades sobre lançamentos, shows tributo e conteúdo exclusivo direto no seu email.</p>
+          <form class="newsletter-form" onsubmit="return false;">
+            <input type="email" placeholder="seu@email.com" class="newsletter-input" required>
+            <button type="submit" class="newsletter-btn">Inscrever — é grátis</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">The Doors</div>
+        <p class="footer-desc">
+          Uma das bandas mais icônicas da história do rock. Site tributo
+          desenvolvido por fãs com respeito ao legado da banda.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h5>Links rápidos</h5>
+        <ul>
+          <li><a href="https://www.youtube.com/user/thedoors" target="_blank" rel="noopener">Músicas &amp; Vídeos</a></li>
+          <li><a href="https://open.spotify.com/artist/22WZ7M8sxp5THdruNY3gXt" target="_blank" rel="noopener">Spotify</a></li>
+          <li><a href="https://www.imdb.com/title/tt0101761/" target="_blank" rel="noopener">Filme "The Doors"</a></li>
+          <li><a href="https://thedoors.com" target="_blank" rel="noopener">Site Oficial</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Social</h5>
+        <ul>
+          <li><a href="https://twitter.com/thedoors" target="_blank" rel="noopener">Twitter</a></li>
+          <li><a href="https://pt-br.facebook.com/thedoors/" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.youtube.com/user/thedoors" target="_blank" rel="noopener">YouTube</a></li>
+          <li><a href="https://www.instagram.com/thedoors/" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-credit">
+        © 2025 The Doors Tribute Site &nbsp;•&nbsp;
+        Desenvolvido com <span>♥</span> por Eduardo G. Rodrigues
+      </p>
+      <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Voltar ao topo</button>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCRIPTS
+  ============================================================ -->
+  <script>
+    /* ---- Header: glass ao scroll + sempre visível (sticky) ---- */
+    const header  = document.getElementById('header');
+    let ticking   = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          /**
+           * Glass effect ao scrollar
+           * Sempre visível = sticky behavior completo
+           */
+          header.classList.toggle('is-glass', y > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* ---- Parallax hero — só desktop ---- */
+    const heroBg = document.getElementById('heroBg');
+    const isMobile = window.matchMedia('(max-width: 767px)');
+    if (!isMobile.matches) {
+      window.addEventListener('scroll', () => {
+        heroBg.style.transform = `translateY(${window.scrollY * 0.2}px)`;
+      }, { passive: true });
+    }
+
+    /* ---- Hamburger / Drawer ---- */
+    const hamburger = document.getElementById('hamburger');
+    const drawer    = document.getElementById('drawer');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = drawer.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    // Fechar com Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+    });
+
+    /* ---- Gallery carousel ---- */
+    let cur   = 0;
+    const track = document.getElementById('galleryTrack');
+    const dots  = document.querySelectorAll('.gallery-dot');
+    const total = document.querySelectorAll('.gallery-slide').length;
+    let   timer = setInterval(() => goTo((cur + 1) % total), 5500);
+
+    function goTo(i) {
+      cur = i;
+      track.style.transform = `translateX(-${i * 100}%)`;
+      dots.forEach((d, j) => d.classList.toggle('active', j === i));
+    }
+
+    document.getElementById('galleryPrev').addEventListener('click', () => { clearInterval(timer); goTo((cur - 1 + total) % total); });
+    document.getElementById('galleryNext').addEventListener('click', () => { clearInterval(timer); goTo((cur + 1) % total); });
+    dots.forEach(d => d.addEventListener('click', () => { clearInterval(timer); goTo(+d.dataset.index); }));
+
+    // Swipe mobile
+    let tx = 0;
+    track.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend',   e => {
+      const dx = tx - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 45) { clearInterval(timer); goTo(dx > 0 ? (cur + 1) % total : (cur - 1 + total) % total); }
+    });
+
+    /* ---- Reveal on scroll (IntersectionObserver) ---- */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          // delay escalonado por índice dentro do parent
+          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')];
+          const delay    = siblings.indexOf(e.target) * 80;
+          setTimeout(() => e.target.classList.add('visible'), delay);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
